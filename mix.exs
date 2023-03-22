@@ -43,7 +43,10 @@ defmodule CiPipelineViz.MixProject do
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
       {:jason, "~> 1.2"},
-      {:bandit, "~> 0.7.3"}
+      {:bandit, "~> 0.7.3"},
+      {:ueberauth, "~> 0.7"},
+      {:ueberauth_gitlab_strategy, "~> 0.4"},
+      {:dotenv_parser, "~> 2.0"}
     ]
   end
 
