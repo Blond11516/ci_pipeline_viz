@@ -29,8 +29,10 @@ defmodule CiPipelineVizWeb.AuthController do
     |> put_flash(:info, "Successfully authenticated.")
     |> put_session(:current_user, %{
       name: auth.info.name,
-      access_token: auth.credentials.token,
-      refresh_token: auth.credentials.refresh_token
+      creds: %{
+        access_token: auth.credentials.token,
+        refresh_token: auth.credentials.refresh_token
+      }
     })
     |> configure_session(renew: true)
     |> redirect(to: ~p"/")

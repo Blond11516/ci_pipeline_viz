@@ -28,7 +28,7 @@ defmodule CiPipelineVizWeb.Router do
   scope "/", CiPipelineVizWeb do
     pipe_through [:browser, :auth]
 
-    get "/", PageController, :home
+    live "/", Live.PipelineViz
   end
 
   # Other scopes may use custom stacks.
