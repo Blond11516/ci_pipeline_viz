@@ -7,10 +7,6 @@ defmodule CiPipelineVizWeb.AuthController do
 
   plug Ueberauth
 
-  def request(conn, _params) do
-    redirect(conn, ~p"/")
-  end
-
   def delete(conn, _params) do
     conn
     |> put_flash(:info, "You have been logged out!")

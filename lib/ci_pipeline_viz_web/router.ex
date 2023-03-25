@@ -23,6 +23,7 @@ defmodule CiPipelineVizWeb.Router do
 
     get "/:provider", AuthController, :request
     get "/:provider/callback", AuthController, :callback
+    delete "/signout", AuthController, :delete
   end
 
   scope "/", CiPipelineVizWeb do

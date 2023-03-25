@@ -21,8 +21,11 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
   @impl true
   def render(assigns) do
     ~H"""
+    <.link :if={@current_user == nil} href={~p"/auth/gitlab"}>Sign in</.link>
+
     <div :if={@current_user} class="flex flex-col">
-      <span>Hello <%= @current_user.name %></span>
+      <div>Hello <%= @current_user.name %></div>
+      <.link href={~p"/auth/signout"} method="delete">Sign out</.link>
 
       <div :if={@selected_project == nil}>
         <.simple_form for={@search} phx-change="search_projects" class="mb-4" phx-submit="noop">
