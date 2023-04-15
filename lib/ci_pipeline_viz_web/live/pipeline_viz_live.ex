@@ -46,7 +46,14 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
         loading...
       </div>
 
-      <span :if={@pipeline != nil}><%= @pipeline.iid %></span>
+      <div :if={@pipeline != nil}>
+      <span><%= @pipeline.iid %></span>
+      <ul>
+        <li :for={job <- @pipeline.jobs}>
+          <span><%= job.name %>: <%= job.duration %>s</span>
+        </li>
+      </ul>
+      </div>
     </div>
     """
   end
