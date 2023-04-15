@@ -47,7 +47,8 @@ defmodule CiPipelineViz.MixProject do
       {:ueberauth, "~> 0.7"},
       {:ueberauth_gitlab_strategy, "~> 0.4"},
       {:dotenv_parser, "~> 2.0"},
-      {:req, "~> 0.3"}
+      {:req, "~> 0.3"},
+      {:neuron, "~> 5.1"}
     ]
   end
 
