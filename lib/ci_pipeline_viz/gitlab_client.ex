@@ -9,7 +9,7 @@ defmodule CiPipelineViz.GitlabClient do
           refresh_token: String.t()
         }
 
-  @spec fetch_pipeline(creds(), Project.path(), Pipeline.iid()) :: {:ok, Pipeline.t()}
+  @spec fetch_pipeline(creds(), Project.path(), Pipeline.iid()) :: {:ok, Pipeline.t(), Graph.t()}
   def fetch_pipeline(creds, project_path, pipeline_iid) do
     {:ok, response} =
       Neuron.query(
@@ -57,8 +57,10 @@ defmodule CiPipelineViz.GitlabClient do
 
     pipeline_response = response.body["data"]["project"]["pipeline"]
 
+    jobs_response = pipeline_response["jobs"]["nodes"]
+
     jobs =
-      Enum.map(pipeline_response["jobs"]["nodes"], fn job_response ->
+      Enum.map(jobs_response, fn job_response ->
         "gid://gitlab/Ci::Build/" <> raw_job_id = job_response["id"]
         "gid://gitlab/Ci::Stage/" <> raw_stage_id = job_response["stage"]["id"]
 
@@ -74,6 +76,34 @@ defmodule CiPipelineViz.GitlabClient do
         }
       end)
 
+    edges =
+      jobs_response
+      |> Enum.flat_map(fn job_response ->
+        job = Enum.find(jobs, fn job -> job.name == job_response["name"] end)
+
+        job_response["previousStageJobsOrNeeds"]["nodes"]
+        |> Enum.map(fn dependency ->
+          label =
+            case dependency do
+              %{"needId" => _} -> :needs
+              %{"stageId" => _} -> :stage
+            end
+
+          dependency_job = Enum.find(jobs, fn job -> job.name == dependency["name"] end)
+          Graph.Edge.new(dependency_job, job, label: label)
+        end)
+      end)
+
+    job_graph =
+      Graph.new(
+        type: :directed,
+        vertex_identifier: fn job -> job.id end
+      )
+      |> Graph.add_vertices(jobs)
+      |> Graph.add_edges(edges)
+
+    Graph.to_dot(job_graph) |> IO.inspect()
+
     pipeline = %Pipeline{
       iid: pipeline_response["iid"],
       duration: pipeline_response["duration"],
@@ -81,6 +111,6 @@ defmodule CiPipelineViz.GitlabClient do
       jobs: jobs
     }
 
-    {:ok, pipeline}
+    {:ok, pipeline, job_graph}
   end
 end

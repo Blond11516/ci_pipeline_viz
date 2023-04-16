@@ -47,12 +47,12 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
       </div>
 
       <div :if={@pipeline != nil}>
-      <span><%= @pipeline.iid %></span>
-      <ul>
-        <li :for={job <- @pipeline.jobs}>
-          <span><%= job.name %>: <%= job.duration %>s</span>
-        </li>
-      </ul>
+        <span><%= @pipeline.iid %></span>
+        <ul>
+          <li :for={job <- @pipeline.jobs}>
+            <span><%= job.name %>: <%= job.duration %>s</span>
+          </li>
+        </ul>
       </div>
     </div>
     """
@@ -77,7 +77,7 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
   def handle_info({:fetch_pipeline, params}, socket) do
     pipeline_iid = String.to_integer(params.pipeline_iid)
 
-    {:ok, pipeline} =
+    {:ok, pipeline, _} =
       GitlabClient.fetch_pipeline(
         params.creds,
         params.project_path,
