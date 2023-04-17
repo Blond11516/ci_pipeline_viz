@@ -49,7 +49,8 @@ defmodule CiPipelineViz.MixProject do
       {:dotenv_parser, "~> 2.0"},
       {:req, "~> 0.3"},
       {:neuron, "~> 5.1"},
-      {:libgraph, "~> 0.16.0"}
+      {:libgraph, "~> 0.16.0"},
+      {:dialyxir, "~> 1.3", only: [:dev, :test], runtime: false}
     ]
   end
 
