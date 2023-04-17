@@ -3,7 +3,7 @@ defmodule CiPipelineViz.Stage do
   defstruct [:id, :name]
 
   @type t :: %__MODULE__{
-          id: integer(),
+          id: CiPipelineViz.Stage.Id.t(),
           name: String.t()
         }
 end

@@ -61,16 +61,16 @@ defmodule CiPipelineViz.GitlabClient do
 
     jobs =
       Enum.map(jobs_response, fn job_response ->
-        "gid://gitlab/Ci::Build/" <> raw_job_id = job_response["id"]
-        "gid://gitlab/Ci::Stage/" <> raw_stage_id = job_response["stage"]["id"]
+        job_id = Job.Id.from_gid(job_response["id"])
+        stage_id = Stage.Id.from_gid(job_response["stage"]["id"])
 
         %Job{
-          id: String.to_integer(raw_job_id),
+          id: job_id,
           duration: job_response["duration"],
           queued_duration: job_response["queuedDuration"],
           name: job_response["name"],
           stage: %Stage{
-            id: String.to_integer(raw_stage_id),
+            id: stage_id,
             name: job_response["stage"]["name"]
           }
         }
@@ -79,7 +79,8 @@ defmodule CiPipelineViz.GitlabClient do
     edges =
       jobs_response
       |> Enum.flat_map(fn job_response ->
-        job = Enum.find(jobs, fn job -> job.name == job_response["name"] end)
+        job_id = Job.Id.from_gid(job_response["id"])
+        job = Enum.find(jobs, fn job -> job.id == job_id end)
 
         job_response["previousStageJobsOrNeeds"]["nodes"]
         |> Enum.map(fn dependency ->
@@ -101,8 +102,6 @@ defmodule CiPipelineViz.GitlabClient do
       )
       |> Graph.add_vertices(jobs)
       |> Graph.add_edges(edges)
-
-    Graph.to_dot(job_graph) |> IO.inspect()
 
     pipeline = %Pipeline{
       iid: pipeline_response["iid"],

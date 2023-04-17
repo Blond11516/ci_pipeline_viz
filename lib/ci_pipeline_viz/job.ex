@@ -3,7 +3,7 @@ defmodule CiPipelineViz.Job do
   defstruct [:id, :duration, :queued_duration, :name, :stage]
 
   @type t :: %__MODULE__{
-          id: integer(),
+          id: CiPipelineViz.Job.Id.t(),
           duration: integer(),
           queued_duration: float(),
           name: String.t(),
