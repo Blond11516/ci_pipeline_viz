@@ -50,7 +50,7 @@ config :phoenix, :json_library, Jason
 
 config :ueberauth, Ueberauth,
   providers: [
-    gitlab: {Ueberauth.Strategy.Gitlab, [default_scope: "api"]}
+    gitlab: {Ueberauth.Strategy.Gitlab, [default_scope: "read_api"]}
   ]
 
 # Import environment specific config. This must remain at the bottom

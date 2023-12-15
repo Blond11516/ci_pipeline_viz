@@ -47,12 +47,8 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
       </div>
 
       <div :if={@pipeline != nil}>
-        <span><%= @pipeline.iid %></span>
-        <ul>
-          <li :for={job <- @pipeline.jobs}>
-            <span><%= job.name %>: <%= job.duration %>s</span>
-          </li>
-        </ul>
+        <span>IID: <%= @pipeline.iid %></span>
+        <div id="chart" phx-hook="timelineChart" data-series={@series_data} />
       </div>
     </div>
     """
@@ -62,10 +58,8 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
   def handle_event("fetch_pipeline", params, socket) do
     fetch_params = %{
       creds: socket.assigns.current_user.creds,
-      project_path: "inkscape/inkscape",
-      pipeline_iid: "21233"
-      # project_path: params["project_path"],
-      # pipeline_iid: params["pipeline_id"]
+      project_path: params["project_path"],
+      pipeline_iid: params["pipeline_iid"]
     }
 
     send(self(), {:fetch_pipeline, fetch_params})
@@ -84,6 +78,36 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
         pipeline_iid
       )
 
-    {:noreply, assign(socket, pipeline: pipeline, loading: false)}
+    run_data =
+      Enum.map(pipeline.jobs, fn job ->
+        started_at_seconds = DateTime.diff(job.started_at, pipeline.started_at, :second)
+        finished_at_seconds = DateTime.diff(job.finished_at, pipeline.started_at, :second)
+
+        %{
+          "x" => job.name,
+          "y" => [
+            started_at_seconds + job.queued_duration,
+            finished_at_seconds + job.queued_duration
+          ]
+        }
+      end)
+
+    queue_data =
+      Enum.map(pipeline.jobs, fn job ->
+        started_at_seconds = DateTime.diff(job.started_at, pipeline.started_at, :second)
+
+        %{
+          "x" => job.name,
+          "y" => [started_at_seconds, started_at_seconds + job.queued_duration]
+        }
+      end)
+
+    series =
+      Jason.encode!([
+        %{"data" => run_data, "name" => "Duration (s)"},
+        %{"data" => queue_data, "name" => "Queued (s)"}
+      ])
+
+    {:noreply, assign(socket, pipeline: pipeline, loading: false, series_data: series)}
   end
 end
