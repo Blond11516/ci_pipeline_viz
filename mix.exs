@@ -32,25 +32,25 @@ defmodule CiPipelineViz.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.7.2"},
+      {:phoenix, "~> 1.7.10"},
       {:phoenix_html, "~> 3.3"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_view, "~> 0.18.16"},
-      {:floki, ">= 0.30.0", only: :test},
-      {:phoenix_live_dashboard, "~> 0.7.2"},
-      {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
-      {:tailwind, "~> 0.2.0", runtime: Mix.env() == :dev},
+      {:phoenix_live_view, "~> 0.20.1"},
+      {:floki, ">= 0.35.2", only: :test},
+      {:phoenix_live_dashboard, "~> 0.8.3"},
+      {:esbuild, "~> 0.8.1", runtime: Mix.env() == :dev},
+      {:tailwind, "~> 0.2.2", runtime: Mix.env() == :dev},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
-      {:jason, "~> 1.2"},
-      {:bandit, "~> 0.7.3"},
-      {:ueberauth, "~> 0.7"},
+      {:jason, "~> 1.4.1"},
+      {:bandit, "~> 1.1.1"},
+      {:ueberauth, "~> 0.7.0"},
       {:ueberauth_gitlab_strategy, "~> 0.4"},
       {:dotenv_parser, "~> 2.0"},
-      {:req, "~> 0.3"},
+      {:req, "~> 0.4.8"},
       {:neuron, "~> 5.1"},
       {:libgraph, "~> 0.16.0"},
-      {:dialyxir, "~> 1.3", only: [:dev, :test], runtime: false}
+      {:dialyxir, "~> 1.4.2", only: [:dev, :test], runtime: false}
     ]
   end
 
