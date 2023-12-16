@@ -2,6 +2,7 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
   use CiPipelineVizWeb, :live_view
 
   alias CiPipelineViz.GitlabClient
+  alias CiPipelineViz.Pipeline
 
   @impl true
   def mount(_, session, socket) do
@@ -42,14 +43,12 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
         <.button type="submit">Visualize</.button>
       </.simple_form>
 
-      <div :if={@loading}>
-        loading...
-      </div>
+      <.async_result :let={pipeline} :if={@pipeline != nil} assign={@pipeline}>
+        <:loading>loading...</:loading>
 
-      <div :if={@pipeline != nil}>
-        <span>IID: <%= @pipeline.iid %></span>
-        <div id="chart" phx-hook="timelineChart" data-series={@series_data} />
-      </div>
+        <span>IID: <%= pipeline.iid %></span>
+        <div id="chart" phx-hook="timelineChart" data-series={prepare_series_data(pipeline)} />
+      </.async_result>
     </div>
     """
   end
@@ -62,13 +61,10 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
       pipeline_iid: params["pipeline_iid"]
     }
 
-    send(self(), {:fetch_pipeline, fetch_params})
-
-    {:noreply, assign(socket, :loading, true)}
+    {:noreply, assign_async(socket, :pipeline, fn -> fetch_pipeline(fetch_params) end)}
   end
 
-  @impl true
-  def handle_info({:fetch_pipeline, params}, socket) do
+  defp fetch_pipeline(params) do
     pipeline_iid = String.to_integer(params.pipeline_iid)
 
     {:ok, pipeline, _} =
@@ -78,6 +74,10 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
         pipeline_iid
       )
 
+    {:ok, %{pipeline: pipeline}}
+  end
+
+  defp prepare_series_data(%Pipeline{} = pipeline) do
     run_data =
       Enum.map(pipeline.jobs, fn job ->
         started_at_seconds = DateTime.diff(job.started_at, pipeline.started_at, :second)
@@ -102,12 +102,9 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
         }
       end)
 
-    series =
-      Jason.encode!([
-        %{"data" => run_data, "name" => "Duration (s)"},
-        %{"data" => queue_data, "name" => "Queued (s)"}
-      ])
-
-    {:noreply, assign(socket, pipeline: pipeline, loading: false, series_data: series)}
+    Jason.encode!([
+      %{"data" => run_data, "name" => "Duration (s)"},
+      %{"data" => queue_data, "name" => "Queued (s)"}
+    ])
   end
 end
