@@ -22,7 +22,6 @@ defmodule CiPipelineViz.GitlabClient do
                 duration
                 queuedDuration
                 startedAt
-                name
                 jobs {
                   nodes {
                     id
@@ -63,7 +62,9 @@ defmodule CiPipelineViz.GitlabClient do
     jobs_response = pipeline_response["jobs"]["nodes"]
 
     jobs =
-      Enum.map(jobs_response, fn job_response ->
+      jobs_response
+      |> Enum.filter(fn job -> job["startedAt"] != nil and job["finishedAt"] != nil end)
+      |> Enum.map(fn job_response ->
         job_id = Job.Id.from_gid(job_response["id"])
         stage_id = Stage.Id.from_gid(job_response["stage"]["id"])
         {:ok, started_at, _} = DateTime.from_iso8601(job_response["startedAt"])
@@ -92,8 +93,7 @@ defmodule CiPipelineViz.GitlabClient do
       duration: pipeline_response["duration"],
       queued_duration: pipeline_response["queued_duration"],
       jobs: jobs,
-      started_at: started_at,
-      name: pipeline_response["name"]
+      started_at: started_at
     }
 
     {:ok, pipeline, job_graph}
