@@ -48,10 +48,7 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-config :ueberauth, Ueberauth,
-  providers: [
-    gitlab: {Ueberauth.Strategy.Gitlab, [default_scope: "read_api"]}
-  ]
+config :assent, http_adapter: Assent.HTTPAdapter.Req
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

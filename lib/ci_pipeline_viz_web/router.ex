@@ -18,7 +18,7 @@ defmodule CiPipelineVizWeb.Router do
     plug CiPipelineVizWeb.Plugs.AuthPlug
   end
 
-  scope "/auth", CiPipelineVizWeb do
+  scope "/auth", CiPipelineVizWeb.Controllers do
     pipe_through :browser
 
     get "/:provider", AuthController, :request

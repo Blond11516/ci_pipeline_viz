@@ -22,10 +22,10 @@ if System.get_env("PHX_SERVER") do
   config :ci_pipeline_viz, CiPipelineVizWeb.Endpoint, server: true
 end
 
-config :ueberauth, Ueberauth.Strategy.Gitlab.OAuth,
-  client_id: CiPipelineVizConfig.gitlab_client_id(),
-  client_secret: CiPipelineVizConfig.gitlab_client_secret(),
-  redirect_uri: CiPipelineVizConfig.gitlab_redirect_uri()
+config :ci_pipeline_viz,
+  gitlab_client_id: CiPipelineVizConfig.gitlab_client_id(),
+  gitlab_client_secret: CiPipelineVizConfig.gitlab_client_secret(),
+  gitlab_redirect_uri: CiPipelineVizConfig.gitlab_redirect_uri()
 
 if config_env() == :prod do
   # The secret key base is used to sign/encrypt cookies and other secrets.
