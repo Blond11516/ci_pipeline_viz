@@ -21,7 +21,26 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
   @impl true
   def render(assigns) do
     ~H"""
-    <.link :if={@current_user == nil} href={~p"/auth/gitlab"}>Sign in</.link>
+    <form
+      :if={@current_user == nil}
+      action={~p"/auth/gitlab"}
+      class="flex flex-col items-center gap-4"
+    >
+      <div class="w-[400px] flex flex-col">
+        <label for="gitlab-base-url-input">Gitlab instance base URL</label>
+        <input
+          id="gitlab-base-url-input"
+          type="text"
+          name="gitlab-base-url"
+          value="https://gitlab.com"
+          class="rounded p-1"
+        />
+      </div>
+      <button type="submit" class="flex items-center gap-1.5 rounded border border-gray-500 p-2">
+        <img src={~p"/images/gitlab-logo-500.svg"} width="32" class="-m-2" />
+        <span class="-mt-1">Sign in with Gitlab</span>
+      </button>
+    </form>
 
     <div :if={@current_user} class="flex flex-col">
       <div>Hello <%= @current_user.name %></div>

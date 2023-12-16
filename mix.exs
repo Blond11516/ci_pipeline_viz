@@ -49,7 +49,8 @@ defmodule CiPipelineViz.MixProject do
       {:req, "~> 0.4.8"},
       {:neuron, "~> 5.1"},
       {:libgraph, "~> 0.16.0"},
-      {:dialyxir, "~> 1.4.2", only: [:dev, :test], runtime: false}
+      {:dialyxir, "~> 1.4.2", only: [:dev, :test], runtime: false},
+      {:tailwind_formatter, "~> 0.4.0", only: [:dev, :test], runtime: false}
     ]
   end
 

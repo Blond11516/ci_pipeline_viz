@@ -5,8 +5,9 @@ defmodule CiPipelineVizWeb.Controllers.AuthController do
 
   alias Assent.{Config, Strategy.Gitlab}
 
-  def request(conn, _params) do
-    config()
+  def request(conn, params) do
+    params
+    |> request_config()
     |> Gitlab.authorize_url()
     |> case do
       {:ok, %{url: url, session_params: session_params}} ->
@@ -35,7 +36,7 @@ defmodule CiPipelineVizWeb.Controllers.AuthController do
     # request phase will be used in the callback phase
     session_params = get_session(conn, :session_params)
 
-    config()
+    base_config()
     # Session params should be added to the config so the strategy can use them
     |> Config.put(:session_params, session_params)
     |> Gitlab.callback(params)
@@ -64,7 +65,10 @@ defmodule CiPipelineVizWeb.Controllers.AuthController do
     |> redirect(to: ~p"/")
   end
 
-  defp config,
+  defp request_config(params),
+    do: [{:base_url, params["gitlab-base-url"]} | base_config()]
+
+  defp base_config,
     do: [
       client_id: Application.get_env(:ci_pipeline_viz, :gitlab_client_id),
       client_secret: Application.get_env(:ci_pipeline_viz, :gitlab_client_secret),
