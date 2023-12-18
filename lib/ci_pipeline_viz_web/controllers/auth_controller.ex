@@ -72,6 +72,7 @@ defmodule CiPipelineVizWeb.Controllers.AuthController do
     do: [
       client_id: Application.get_env(:ci_pipeline_viz, :gitlab_client_id),
       client_secret: Application.get_env(:ci_pipeline_viz, :gitlab_client_secret),
-      redirect_uri: Application.get_env(:ci_pipeline_viz, :gitlab_redirect_uri)
+      redirect_uri: Application.get_env(:ci_pipeline_viz, :gitlab_redirect_uri),
+      authorization_params: [scope: "read_api"]
     ]
 end
