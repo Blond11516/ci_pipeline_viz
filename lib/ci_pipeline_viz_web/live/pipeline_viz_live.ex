@@ -3,6 +3,7 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
 
   alias CiPipelineViz.GitlabClient
   alias CiPipelineViz.Pipeline
+  alias CiPipelineVizWeb.Controllers.AuthController
 
   @impl true
   def mount(_, session, socket) do
@@ -31,8 +32,24 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
         <input
           id="gitlab-base-url-input"
           type="text"
-          name="gitlab-base-url"
+          name={AuthController.base_url_param_name()}
           value="https://gitlab.com"
+          class="rounded p-1"
+        />
+        <label for="gitlab-application_id-input">Gitlab application ID</label>
+        <input
+          id="gitlab-application_id-input"
+          type="text"
+          name={AuthController.application_id_param_name()}
+          placeholder="73a51d93fefec6923c498a8f53de9d89b0be2a1be73db72eaf4329d827f379e6"
+          class="rounded p-1"
+        />
+        <label for="gitlab-application-secret-input">Gitlab application secret</label>
+        <input
+          id="gitlab-application-secret-input"
+          type="text"
+          name={AuthController.application_secret_param_name()}
+          placeholder="gloas-768d8b69e5555f8e529215d723f3e8a6f362f0aa3e6af837939c47c8258373da"
           class="rounded p-1"
         />
       </div>

@@ -1,4 +1,14 @@
 defmodule CiPipelineVizWeb.Controllers.AuthController do
+  defmodule GitlabAppCredentials do
+    @enforce_keys [:application_id, :application_secret]
+    defstruct [:application_id, :application_secret]
+
+    @type t :: %__MODULE__{
+            application_id: String.t(),
+            application_secret: String.t()
+          }
+  end
+
   use CiPipelineVizWeb, :controller
 
   import Plug.Conn
@@ -6,17 +16,23 @@ defmodule CiPipelineVizWeb.Controllers.AuthController do
   alias Assent.{Config, Strategy.Gitlab}
 
   def request(conn, params) do
-    params
-    |> request_config()
+    config = request_config(params)
+
+    config
     |> Gitlab.authorize_url()
     |> case do
       {:ok, %{url: url, session_params: session_params}} ->
+        app_credentials = %GitlabAppCredentials{
+          application_id: Keyword.fetch!(config, :client_id),
+          application_secret: Keyword.fetch!(config, :client_secret)
+        }
+
+        conn
         # Session params (used for OAuth 2.0 and OIDC strategies) will be
         # retrieved when user returns for the callback phase
-        conn = put_session(conn, :session_params, session_params)
-
+        |> put_session(:session_params, session_params)
+        |> put_session(:app_credentials, app_credentials)
         # Redirect end-user to Github to authorize access to their account
-        conn
         |> put_resp_header("location", url)
         |> send_resp(302, "")
 
@@ -35,8 +51,10 @@ defmodule CiPipelineVizWeb.Controllers.AuthController do
     # The session params (used for OAuth 2.0 and OIDC strategies) stored in the
     # request phase will be used in the callback phase
     session_params = get_session(conn, :session_params)
+    app_credentials = get_session(conn, :app_credentials)
 
-    base_config()
+    app_credentials
+    |> callback_config()
     # Session params should be added to the config so the strategy can use them
     |> Config.put(:session_params, session_params)
     |> Gitlab.callback(params)
@@ -44,18 +62,20 @@ defmodule CiPipelineVizWeb.Controllers.AuthController do
       {:ok, %{user: user, token: token}} ->
         conn
         |> put_session(:current_user, %{
-          name: user["preferred_username"],
+          name: Map.fetch!(user, "preferred_username"),
           creds: %{
-            access_token: token["access_token"],
-            refresh_token: token["refresh_token"]
+            access_token: Map.fetch!(token, "access_token"),
+            refresh_token: Map.fetch!(token, "refresh_token")
           }
         })
         |> configure_session(renew: true)
-        |> redirect(to: ~p"/")
 
       {:error, error} ->
-        put_flash(conn, :error, "Authorization failed: #{inspect(error)}")
+        conn
+        |> put_flash(:error, "Authorization failed: #{inspect(error)}")
+        |> clear_session()
     end
+    |> redirect(to: ~p"/")
   end
 
   def delete(conn, _params) do
@@ -65,14 +85,28 @@ defmodule CiPipelineVizWeb.Controllers.AuthController do
     |> redirect(to: ~p"/")
   end
 
+  def base_url_param_name, do: "gitlab-base-url"
+  def application_id_param_name, do: "gitlab-application-id"
+  def application_secret_param_name, do: "gitlab-application_id"
+
   defp request_config(params),
-    do: [{:base_url, params["gitlab-base-url"]} | base_config()]
+    do:
+      Config.merge(base_config(),
+        base_url: Map.fetch!(params, base_url_param_name()),
+        client_id: Map.fetch!(params, application_id_param_name()),
+        client_secret: Map.fetch!(params, application_secret_param_name())
+      )
+
+  defp callback_config(%GitlabAppCredentials{} = app_credentials),
+    do:
+      Config.merge(base_config(),
+        client_id: app_credentials.application_id,
+        client_secret: app_credentials.application_secret
+      )
 
   defp base_config,
     do: [
-      client_id: Application.get_env(:ci_pipeline_viz, :gitlab_client_id),
-      client_secret: Application.get_env(:ci_pipeline_viz, :gitlab_client_secret),
-      redirect_uri: Application.get_env(:ci_pipeline_viz, :gitlab_redirect_uri),
+      redirect_uri: CiPipelineVizConfig.gitlab_redirect_uri(),
       authorization_params: [scope: "read_api"]
     ]
 end

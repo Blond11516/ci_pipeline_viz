@@ -1,6 +1,8 @@
+alias CiPipelineVizConfig.EnvHelpers
+
 import Config
 
-CiPipelineVizConfig.load_env()
+EnvHelpers.load_env()
 
 # config/runtime.exs is executed for all environments, including
 # during releases. It is executed after compilation and before the
@@ -23,9 +25,7 @@ if System.get_env("PHX_SERVER") do
 end
 
 config :ci_pipeline_viz,
-  gitlab_client_id: CiPipelineVizConfig.gitlab_client_id(),
-  gitlab_client_secret: CiPipelineVizConfig.gitlab_client_secret(),
-  gitlab_redirect_uri: CiPipelineVizConfig.gitlab_redirect_uri()
+  gitlab_redirect_uri: EnvHelpers.fetch_string!("GITLAB_REDIRECT_URI")
 
 if config_env() == :prod do
   # The secret key base is used to sign/encrypt cookies and other secrets.
