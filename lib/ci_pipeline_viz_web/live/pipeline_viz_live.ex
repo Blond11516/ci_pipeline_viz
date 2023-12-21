@@ -91,26 +91,25 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
 
   @impl true
   def handle_event("fetch_pipeline", params, socket) do
-    fetch_params = %{
-      creds: socket.assigns.current_user.creds,
-      project_path: params["project_path"],
-      pipeline_iid: params["pipeline_iid"]
-    }
+    pipeline_iid = String.to_integer(params["pipeline_iid"])
 
-    {:noreply, assign_async(socket, :pipeline, fn -> fetch_pipeline(fetch_params) end)}
-  end
+    socket =
+      assign_async(socket, :pipeline, fn ->
+        {:ok, pipeline, _} =
+          GitlabClient.fetch_pipeline(
+            Map.put(
+              socket.assigns.current_user.creds,
+              :base_url,
+              socket.assigns.current_user.base_url
+            ),
+            params["project_path"],
+            pipeline_iid
+          )
 
-  defp fetch_pipeline(params) do
-    pipeline_iid = String.to_integer(params.pipeline_iid)
+        {:ok, %{pipeline: pipeline}}
+      end)
 
-    {:ok, pipeline, _} =
-      GitlabClient.fetch_pipeline(
-        params.creds,
-        params.project_path,
-        pipeline_iid
-      )
-
-    {:ok, %{pipeline: pipeline}}
+    {:noreply, socket}
   end
 
   defp prepare_series_data(%Pipeline{} = pipeline) do
