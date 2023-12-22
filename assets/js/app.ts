@@ -20,15 +20,16 @@ import "phoenix_html";
 // Establish Phoenix Socket and LiveView configuration.
 import { Socket } from "phoenix";
 import { LiveSocket } from "phoenix_live_view";
-import topbar from "../vendor/topbar.js";
+import topbar from "topbar";
 import timelineChartHook from "./hooks/timelineChart";
+import { Hook } from "../types/hook";
 
-const hooks = {
+const hooks: Record<string, Hook> = {
   timelineChart: timelineChartHook,
 };
 
-const csrfToken = document
-  .querySelector("meta[name='csrf-token']")
+const csrfToken = document!
+  .querySelector("meta[name='csrf-token']")!
   .getAttribute("content");
 
 const liveSocket = new LiveSocket("/live", Socket, {

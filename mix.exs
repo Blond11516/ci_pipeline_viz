@@ -49,6 +49,7 @@ defmodule CiPipelineViz.MixProject do
       {:req, "~> 0.4.8"},
       {:neuron, "~> 5.1"},
       {:libgraph, "~> 0.16.0"},
+      {:bun, "~> 1.0.0"},
       {:dialyxir, "~> 1.4.2", only: [:dev, :test], runtime: false},
       {:tailwind_formatter, "~> 0.4.0", only: [:dev, :test], runtime: false}
     ]
@@ -63,7 +64,11 @@ defmodule CiPipelineViz.MixProject do
   defp aliases do
     [
       setup: ["deps.get", "assets.setup", "assets.build"],
-      "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
+      "assets.setup": [
+        "tailwind.install --if-missing",
+        "esbuild.install --if-missing",
+        "bun.install --if-missing"
+      ],
       "assets.build": ["tailwind default", "esbuild default"],
       "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"]
     ]

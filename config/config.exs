@@ -22,8 +22,14 @@ config :ci_pipeline_viz, CiPipelineVizWeb.Endpoint,
 config :esbuild,
   version: "0.19.9",
   default: [
-    args:
-      ~w(js/app.js --bundle --target=es2017 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
+    args: ~w(
+        js/app.ts
+        --bundle
+        --target=es2017
+        --outdir=../priv/static/assets
+        --external:/fonts/*
+        --external:/images/*
+      ),
     cd: Path.expand("../assets", __DIR__),
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   ]
@@ -39,6 +45,8 @@ config :tailwind,
     ),
     cd: Path.expand("../assets", __DIR__)
   ]
+
+config :bun, version: "1.0.19", default: [cd: Path.expand("../assets", __DIR__)]
 
 # Configures Elixir's Logger
 config :logger, :console,

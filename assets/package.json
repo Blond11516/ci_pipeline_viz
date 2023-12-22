@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "apexcharts": "^3.45.1",
+    "topbar": "^2.0.1"
+  },
+  "devDependencies": {
+    "@types/phoenix": "^1.6.4",
+    "@types/phoenix_live_view": "^0.18.4",
+    "typescript": "^5.3.3"
+  }
+}

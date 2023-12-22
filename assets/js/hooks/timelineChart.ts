@@ -1,6 +1,10 @@
-export default {
-  mounted() {
-    const series = JSON.parse(this.el.dataset.series);
+import ApexCharts from "apexcharts";
+import { HookContext } from "../../types/hook";
+
+const timelineChart = {
+  mounted(this: HookContext) {
+    const dataset = this.el.dataset as unknown as string;
+    const series = JSON.parse(dataset) as { series: ApexAxisChartSeries };
     const chart = new ApexCharts(document.querySelector("#chart"), {
       series: series,
       chart: {
@@ -24,3 +28,5 @@ export default {
     chart.render();
   },
 };
+
+export default timelineChart;
