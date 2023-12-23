@@ -40,6 +40,7 @@ defmodule CiPipelineViz.MixProject do
       {:phoenix_live_dashboard, "~> 0.8.3"},
       {:esbuild, "~> 0.8.1", runtime: Mix.env() == :dev},
       {:tailwind, "~> 0.2.2", runtime: Mix.env() == :dev},
+      {:bun, "~> 1.0.0", runtime: Mix.env() == :dev},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
       {:jason, "~> 1.4.1"},
@@ -48,8 +49,6 @@ defmodule CiPipelineViz.MixProject do
       {:dotenv_parser, "~> 2.0"},
       {:req, "~> 0.4.8"},
       {:neuron, "~> 5.1"},
-      {:libgraph, "~> 0.16.0"},
-      {:bun, "~> 1.0.0"},
       {:dialyxir, "~> 1.4.2", only: [:dev, :test], runtime: false},
       {:tailwind_formatter, "~> 0.4.0", only: [:dev, :test], runtime: false}
     ]

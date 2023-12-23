@@ -34,18 +34,6 @@ defmodule CiPipelineViz.GitlabClient do
                       id
                       name
                     }
-                    previousStageJobsOrNeeds {
-                      nodes {
-                        ... on CiBuildNeed {
-                          needId: id
-                          name
-                        }
-                        ... on CiJob {
-                          stageId: id
-                          name
-                        }
-                      }
-                    }
                   }
                 }
               }
@@ -84,8 +72,6 @@ defmodule CiPipelineViz.GitlabClient do
         }
       end)
 
-    job_graph = parse_jobs_graph(jobs, jobs_response)
-
     {:ok, started_at, _} = DateTime.from_iso8601(pipeline_response["startedAt"])
 
     pipeline = %Pipeline{
@@ -96,42 +82,6 @@ defmodule CiPipelineViz.GitlabClient do
       started_at: started_at
     }
 
-    {:ok, pipeline, job_graph}
-  end
-
-  @spec parse_jobs_graph([Job.t()], map()) :: Graph.t()
-  defp parse_jobs_graph(jobs, jobs_response) do
-    edges = Enum.flat_map(jobs_response, &build_dependency_edge_list(&1, jobs))
-
-    Graph.new(
-      type: :directed,
-      vertex_identifier: fn job -> job.id end
-    )
-    |> Graph.add_vertices(jobs)
-    |> Graph.add_edges(edges)
-  end
-
-  @spec build_dependency_edge_list(map(), [Job.t()]) :: [Graph.Edge.t()]
-  defp build_dependency_edge_list(job_response, jobs) do
-    job_id = Job.Id.from_gid(job_response["id"])
-    job = Enum.find(jobs, fn job -> job.id == job_id end)
-
-    Enum.map(
-      job_response["previousStageJobsOrNeeds"]["nodes"],
-      &build_dependency_edge(&1, jobs, job)
-    )
-  end
-
-  @spec build_dependency_edge(map(), [Job.t()], Job.t()) :: Graph.Edge.t()
-  defp build_dependency_edge(dependency, jobs, dependent_job) do
-    label =
-      case dependency do
-        %{"needId" => _} -> :needs
-        %{"stageId" => _} -> :stage
-      end
-
-    jobs
-    |> Enum.find(fn job -> job.name == dependency["name"] end)
-    |> Graph.Edge.new(dependent_job, label: label)
+    {:ok, pipeline}
   end
 end

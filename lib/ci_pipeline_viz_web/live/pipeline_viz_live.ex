@@ -103,7 +103,7 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
   defp fetch_pipeline(params) do
     pipeline_iid = String.to_integer(params.pipeline_iid)
 
-    {:ok, pipeline, _} =
+    {:ok, pipeline} =
       GitlabClient.fetch_pipeline(
         params.creds,
         params.project_path,
