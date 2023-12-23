@@ -114,34 +114,19 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
   end
 
   defp prepare_series_data(%Pipeline{} = pipeline) do
-    jobs = Enum.sort_by(pipeline.jobs, fn job -> job.started_at end) |> IO.inspect()
+    pipeline.jobs
+    |> Enum.sort_by(fn job -> job.started_at end)
+    |> Enum.map(fn job ->
+      started_at_seconds = DateTime.diff(job.started_at, pipeline.started_at, :second)
+      finished_at_seconds = DateTime.diff(job.finished_at, pipeline.started_at, :second)
 
-    run_data =
-      Enum.map(jobs, fn job ->
-        started_at_seconds = DateTime.diff(job.started_at, pipeline.started_at, :second)
-        finished_at_seconds = DateTime.diff(job.finished_at, pipeline.started_at, :second)
-
-        %{
-          "name" => job.name,
-          "start" => started_at_seconds + job.queued_duration,
-          "end" => finished_at_seconds
-        }
-      end)
-
-    queue_data =
-      Enum.map(jobs, fn job ->
-        started_at_seconds = DateTime.diff(job.started_at, pipeline.started_at, :second)
-
-        %{
-          "name" => job.name,
-          "start" => started_at_seconds,
-          "end" => started_at_seconds + job.queued_duration
-        }
-      end)
-
-    Jason.encode!([
-      %{"data" => queue_data, "name" => "Queued (s)"},
-      %{"data" => run_data, "name" => "Duration (s)"}
-    ])
+      %{
+        "name" => job.name,
+        "queued_at_seconds" => started_at_seconds,
+        "queued_duration" => job.queued_duration,
+        "run_duration" => finished_at_seconds - started_at_seconds
+      }
+    end)
+    |> Jason.encode!()
   end
 end
