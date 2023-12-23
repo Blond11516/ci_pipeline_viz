@@ -83,7 +83,7 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
         <:loading>loading...</:loading>
 
         <span>IID: <%= pipeline.iid %></span>
-        <div id="chart" phx-hook="timelineChart" data-series={prepare_series_data(pipeline)} />
+        <canvas id="chart" phx-hook="timelineChart" data-series={prepare_series_data(pipeline)} />
       </.async_result>
     </div>
     """
@@ -114,33 +114,34 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
   end
 
   defp prepare_series_data(%Pipeline{} = pipeline) do
+    jobs = Enum.sort_by(pipeline.jobs, fn job -> job.started_at end) |> IO.inspect()
+
     run_data =
-      Enum.map(pipeline.jobs, fn job ->
+      Enum.map(jobs, fn job ->
         started_at_seconds = DateTime.diff(job.started_at, pipeline.started_at, :second)
         finished_at_seconds = DateTime.diff(job.finished_at, pipeline.started_at, :second)
 
         %{
-          "x" => job.name,
-          "y" => [
-            started_at_seconds + job.queued_duration,
-            finished_at_seconds + job.queued_duration
-          ]
+          "name" => job.name,
+          "start" => started_at_seconds + job.queued_duration,
+          "end" => finished_at_seconds
         }
       end)
 
     queue_data =
-      Enum.map(pipeline.jobs, fn job ->
+      Enum.map(jobs, fn job ->
         started_at_seconds = DateTime.diff(job.started_at, pipeline.started_at, :second)
 
         %{
-          "x" => job.name,
-          "y" => [started_at_seconds, started_at_seconds + job.queued_duration]
+          "name" => job.name,
+          "start" => started_at_seconds,
+          "end" => started_at_seconds + job.queued_duration
         }
       end)
 
     Jason.encode!([
-      %{"data" => run_data, "name" => "Duration (s)"},
-      %{"data" => queue_data, "name" => "Queued (s)"}
+      %{"data" => queue_data, "name" => "Queued (s)"},
+      %{"data" => run_data, "name" => "Duration (s)"}
     ])
   end
 end

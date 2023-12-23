@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "apexcharts": "^3.45.1",
+    "chart.js": "^4.4.1",
     "topbar": "^2.0.1"
   },
   "devDependencies": {
