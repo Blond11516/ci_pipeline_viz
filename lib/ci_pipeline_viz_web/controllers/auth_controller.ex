@@ -1,9 +1,10 @@
 defmodule CiPipelineVizWeb.Controllers.AuthController do
   defmodule GitlabAppCredentials do
-    @enforce_keys [:application_id, :application_secret]
-    defstruct [:application_id, :application_secret]
+    @enforce_keys [:base_url, :application_id, :application_secret]
+    defstruct [:base_url, :application_id, :application_secret]
 
     @type t :: %__MODULE__{
+            base_url: String.t(),
             application_id: String.t(),
             application_secret: String.t()
           }
@@ -23,6 +24,7 @@ defmodule CiPipelineVizWeb.Controllers.AuthController do
     |> case do
       {:ok, %{url: url, session_params: session_params}} ->
         app_credentials = %GitlabAppCredentials{
+          base_url: Keyword.fetch!(config, :base_url),
           application_id: Keyword.fetch!(config, :client_id),
           application_secret: Keyword.fetch!(config, :client_secret)
         }
@@ -62,6 +64,7 @@ defmodule CiPipelineVizWeb.Controllers.AuthController do
       {:ok, %{user: user, token: token}} ->
         conn
         |> put_session(:current_user, %{
+          base_url: app_credentials.base_url,
           name: Map.fetch!(user, "preferred_username"),
           creds: %{
             access_token: Map.fetch!(token, "access_token"),
@@ -100,6 +103,7 @@ defmodule CiPipelineVizWeb.Controllers.AuthController do
   defp callback_config(%GitlabAppCredentials{} = app_credentials),
     do:
       Config.merge(base_config(),
+        base_url: app_credentials.base_url,
         client_id: app_credentials.application_id,
         client_secret: app_credentials.application_secret
       )

@@ -4,13 +4,15 @@ defmodule CiPipelineViz.GitlabClient do
   alias CiPipelineViz.Pipeline
   alias CiPipelineViz.Stage
 
-  @type creds :: %{
+  @type gitlab_config :: %{
+          base_url: String.t(),
           access_token: String.t(),
           refresh_token: String.t()
         }
 
-  @spec fetch_pipeline(creds(), Project.path(), Pipeline.iid()) :: {:ok, Pipeline.t(), Graph.t()}
-  def fetch_pipeline(creds, project_path, pipeline_iid) do
+  @spec fetch_pipeline(gitlab_config(), Project.path(), Pipeline.iid()) ::
+          {:ok, Pipeline.t(), Graph.t()}
+  def fetch_pipeline(gitlab_config, project_path, pipeline_iid) do
     {:ok, response} =
       Neuron.query(
         """
@@ -41,8 +43,8 @@ defmodule CiPipelineViz.GitlabClient do
           }
         """,
         %{project_path: project_path, pipeline_iid: pipeline_iid},
-        url: "https://gitlab.com/api/graphql",
-        headers: [authorization: "Bearer #{creds.access_token}"]
+        url: Path.join(gitlab_config.base_url, "/api/graphql"),
+        headers: [authorization: "Bearer #{gitlab_config.access_token}"]
       )
 
     pipeline_response = response.body["data"]["project"]["pipeline"]
