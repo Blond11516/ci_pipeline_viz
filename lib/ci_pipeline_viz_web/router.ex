@@ -14,20 +14,8 @@ defmodule CiPipelineVizWeb.Router do
     plug :accepts, ["json"]
   end
 
-  pipeline :auth do
-    plug CiPipelineVizWeb.Plugs.AuthPlug
-  end
-
-  scope "/auth", CiPipelineVizWeb.Controllers do
-    pipe_through :browser
-
-    get "/:provider", AuthController, :request
-    get "/:provider/callback", AuthController, :callback
-    delete "/signout", AuthController, :delete
-  end
-
   scope "/", CiPipelineVizWeb do
-    pipe_through [:browser, :auth]
+    pipe_through [:browser]
 
     live "/", Live.PipelineViz
   end

@@ -3,7 +3,6 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
 
   alias CiPipelineViz.GitlabClient
   alias CiPipelineViz.Entities.Pipeline
-  alias CiPipelineVizWeb.Controllers.AuthController
 
   @impl true
   def mount(_, session, socket) do
@@ -11,7 +10,7 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
       assign(socket,
         current_user: session["current_user"],
         loading_pipeline: false,
-        pipeline_form: to_form(%{}),
+        pipeline_form: to_form(%{"instance_url" => "https://gitlab.com"}),
         pipeline: nil,
         loading: false
       )
@@ -22,48 +21,20 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
   @impl true
   def render(assigns) do
     ~H"""
-    <form
-      :if={@current_user == nil}
-      action={~p"/auth/gitlab"}
-      class="flex flex-col items-center gap-4"
-    >
-      <div class="w-[400px] flex flex-col">
-        <label for="gitlab-base-url-input">Gitlab instance base URL</label>
-        <input
-          id="gitlab-base-url-input"
-          type="text"
-          name={AuthController.base_url_param_name()}
-          value="https://gitlab.com"
-          class="rounded p-1"
-        />
-        <label for="gitlab-application_id-input">Gitlab application ID</label>
-        <input
-          id="gitlab-application_id-input"
-          type="text"
-          name={AuthController.application_id_param_name()}
-          placeholder="73a51d93fefec6923c498a8f53de9d89b0be2a1be73db72eaf4329d827f379e6"
-          class="rounded p-1"
-        />
-        <label for="gitlab-application-secret-input">Gitlab application secret</label>
-        <input
-          id="gitlab-application-secret-input"
-          type="text"
-          name={AuthController.application_secret_param_name()}
-          placeholder="gloas-768d8b69e5555f8e529215d723f3e8a6f362f0aa3e6af837939c47c8258373da"
-          class="rounded p-1"
-        />
-      </div>
-      <button type="submit" class="flex items-center gap-1.5 rounded border border-gray-500 p-2">
-        <img src={~p"/images/gitlab-logo-500.svg"} width="32" class="-m-2" />
-        <span class="-mt-1">Sign in with Gitlab</span>
-      </button>
-    </form>
-
-    <div :if={@current_user} class="flex flex-col">
-      <div>Hello <%= @current_user.name %></div>
-      <.link href={~p"/auth/signout"} method="delete">Sign out</.link>
-
+    <div class="flex flex-col">
       <.simple_form for={@pipeline_form} phx-submit="fetch_pipeline" class="mv-4">
+        <.input
+          field={@pipeline_form["instance_url"]}
+          label="Enter the URL of your Gitlab instance"
+          placeholder="https://gitlab.com"
+        />
+
+        <.input
+          field={@pipeline_form["access_token"]}
+          label="Enter your Gitlab access token"
+          placeholder="glpat-pn8LxA8b8UyfrJxRvVRw"
+        />
+
         <.input
           field={@pipeline_form["project_path"]}
           label="Enter the full path of the project the pipeline belongs to"
@@ -97,11 +68,10 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
       assign_async(socket, :pipeline, fn ->
         {:ok, pipeline} =
           GitlabClient.fetch_pipeline(
-            Map.put(
-              socket.assigns.current_user.creds,
-              :base_url,
-              socket.assigns.current_user.base_url
-            ),
+            %{
+              base_url: params["instance_url"],
+              access_token: params["access_token"]
+            },
             params["project_path"],
             pipeline_iid
           )

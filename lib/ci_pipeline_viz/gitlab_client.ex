@@ -6,8 +6,7 @@ defmodule CiPipelineViz.GitlabClient do
 
   @type gitlab_config :: %{
           base_url: String.t(),
-          access_token: String.t(),
-          refresh_token: String.t()
+          access_token: String.t()
         }
 
   @spec fetch_pipeline(gitlab_config(), Project.path(), Pipeline.iid()) ::
