@@ -32,25 +32,25 @@ defmodule CiPipelineViz.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.7.10"},
-      {:phoenix_html, "~> 3.3"},
-      {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_view, "~> 0.20.1"},
-      {:floki, ">= 0.35.2", only: :test},
-      {:phoenix_live_dashboard, "~> 0.8.3"},
-      {:esbuild, "~> 0.8.1", runtime: Mix.env() == :dev},
-      {:tailwind, "~> 0.2.2", runtime: Mix.env() == :dev},
-      {:bun, "~> 1.0.0", runtime: Mix.env() == :dev},
-      {:telemetry_metrics, "~> 0.6"},
-      {:telemetry_poller, "~> 1.0"},
-      {:jason, "~> 1.4.1"},
-      {:bandit, "~> 1.1.1"},
-      {:assent, "~> 0.2.9"},
-      {:dotenv_parser, "~> 2.0"},
-      {:req, "~> 0.4.8"},
-      {:neuron, "~> 5.1"},
-      {:dialyxir, "~> 1.4.2", only: [:dev, :test], runtime: false},
-      {:tailwind_formatter, "~> 0.4.0", only: [:dev, :test], runtime: false}
+      {:phoenix, "== 1.7.10"},
+      {:phoenix_html, "== 4.0.0"},
+      {:phoenix_live_reload, "== 1.4.1", only: :dev},
+      {:phoenix_live_view, "== 0.20.3"},
+      {:floki, "== 0.35.2", only: :test},
+      {:phoenix_live_dashboard, "== 0.8.3"},
+      {:esbuild, "== 0.8.1", runtime: Mix.env() == :dev},
+      {:tailwind, "== 0.2.2", runtime: Mix.env() == :dev},
+      {:bun, "== 1.0.0", runtime: Mix.env() == :dev},
+      {:telemetry_metrics, "== 0.6.2"},
+      {:telemetry_poller, "== 1.0.0"},
+      {:jason, "== 1.4.1"},
+      {:bandit, "== 1.1.3"},
+      {:assent, "== 0.2.9"},
+      {:dotenv_parser, "== 2.0.0"},
+      {:req, "== 0.4.8"},
+      {:neuron, "== 5.1.0"},
+      {:dialyxir, "== 1.4.3", only: [:dev, :test], runtime: false},
+      {:tailwind_formatter, "== 0.4.0", only: [:dev, :test], runtime: false}
     ]
   end
 
