@@ -1,8 +1,8 @@
 defmodule CiPipelineViz.GitlabClient do
-  alias CiPipelineViz.Job
-  alias CiPipelineViz.Project
-  alias CiPipelineViz.Pipeline
-  alias CiPipelineViz.Stage
+  alias CiPipelineViz.Entities.Job
+  alias CiPipelineViz.Entities.Project
+  alias CiPipelineViz.Entities.Pipeline
+  alias CiPipelineViz.Entities.Stage
 
   @type gitlab_config :: %{
           base_url: String.t(),

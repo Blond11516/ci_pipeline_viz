@@ -1,4 +1,4 @@
-defmodule CiPipelineViz.Job.Id do
+defmodule CiPipelineViz.Entities.Job.Id do
   @enforce_keys [:id]
   defstruct [:id]
 
@@ -7,7 +7,7 @@ defmodule CiPipelineViz.Job.Id do
         }
 
   defimpl String.Chars do
-    def to_string(%CiPipelineViz.Job.Id{} = id), do: Integer.to_string(id.id)
+    def to_string(%CiPipelineViz.Entities.Job.Id{} = id), do: Integer.to_string(id.id)
   end
 
   @spec from_gid(String.t()) :: t()

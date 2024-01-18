@@ -2,7 +2,7 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
   use CiPipelineVizWeb, :live_view
 
   alias CiPipelineViz.GitlabClient
-  alias CiPipelineViz.Pipeline
+  alias CiPipelineViz.Entities.Pipeline
   alias CiPipelineVizWeb.Controllers.AuthController
 
   @impl true

@@ -1,4 +1,4 @@
-defmodule CiPipelineViz.Job do
+defmodule CiPipelineViz.Entities.Job do
   @enforce_keys [:id, :duration, :queued_duration, :name, :started_at, :finished_at, :stage]
   defstruct [:id, :duration, :queued_duration, :name, :started_at, :finished_at, :stage]
 

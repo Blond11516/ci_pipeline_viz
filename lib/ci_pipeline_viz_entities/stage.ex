@@ -1,4 +1,4 @@
-defmodule CiPipelineViz.Stage do
+defmodule CiPipelineViz.Entities.Stage do
   @enforce_keys [:id, :name]
   defstruct [:id, :name]
 
