@@ -20,7 +20,7 @@ config :ci_pipeline_viz, CiPipelineVizWeb.Endpoint,
 
 # Configure esbuild (the version is required)
 config :esbuild,
-  version: "0.19.9",
+  version: "0.19.11",
   default: [
     args: ~w(
         js/app.ts
@@ -36,7 +36,7 @@ config :esbuild,
 
 # Configure tailwind (the version is required)
 config :tailwind,
-  version: "3.3.6",
+  version: "3.4.1",
   default: [
     args: ~w(
       --config=tailwind.config.js
@@ -46,7 +46,7 @@ config :tailwind,
     cd: Path.expand("../assets", __DIR__)
   ]
 
-config :bun, version: "1.0.19", default: [cd: Path.expand("../assets", __DIR__)]
+config :bun, version: "1.0.23", default: [cd: Path.expand("../assets", __DIR__)]
 
 # Configures Elixir's Logger
 config :logger, :console,
