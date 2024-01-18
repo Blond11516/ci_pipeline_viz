@@ -52,6 +52,7 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
 
       <.async_result :let={pipeline} :if={@pipeline != nil} assign={@pipeline}>
         <:loading>loading...</:loading>
+        <:failed :let={{:error, reason}}><%= reason %></:failed>
 
         <span>IID: <%= pipeline.iid %></span>
         <canvas id="chart" phx-hook="timelineChart" data-series={prepare_series_data(pipeline)} />
@@ -66,17 +67,17 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
 
     socket =
       assign_async(socket, :pipeline, fn ->
-        {:ok, pipeline} =
-          GitlabClient.fetch_pipeline(
-            %{
-              base_url: params["instance_url"],
-              access_token: params["access_token"]
-            },
-            params["project_path"],
-            pipeline_iid
-          )
-
-        {:ok, %{pipeline: pipeline}}
+        with {:ok, pipeline} <-
+               GitlabClient.fetch_pipeline(
+                 %{
+                   base_url: params["instance_url"],
+                   access_token: params["access_token"]
+                 },
+                 params["project_path"],
+                 pipeline_iid
+               ) do
+          {:ok, %{pipeline: pipeline}}
+        end
       end)
 
     {:noreply, socket}
