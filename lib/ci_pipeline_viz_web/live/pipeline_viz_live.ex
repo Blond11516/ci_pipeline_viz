@@ -8,11 +8,10 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
   def mount(_, session, socket) do
     socket =
       assign(socket,
-        current_user: session["current_user"],
-        loading_pipeline: false,
+        base_url: session["base_url"],
+        access_token: session["access_token"],
         pipeline_form: to_form(%{"instance_url" => "https://gitlab.com"}),
-        pipeline: nil,
-        loading: false
+        pipeline: nil
       )
 
     {:ok, socket}
@@ -21,21 +20,15 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
   @impl true
   def render(assigns) do
     ~H"""
+    <.link
+      href={~p"/settings"}
+      class="border-2 border-zinc-900 font-semibold py-2 px-3 rounded-lg hover:bg-zinc-100"
+    >
+      Settings
+    </.link>
+
     <div class="flex flex-col">
       <.simple_form for={@pipeline_form} phx-submit="fetch_pipeline" class="mv-4">
-        <.input
-          field={@pipeline_form["instance_url"]}
-          label="Enter the URL of your Gitlab instance"
-          placeholder="https://gitlab.com"
-        />
-
-        <.input
-          field={@pipeline_form["access_token"]}
-          label="Enter your Gitlab access token"
-          placeholder="glpat-pn8LxA8b8UyfrJxRvVRw"
-          type="password"
-        />
-
         <.input
           field={@pipeline_form["project_path"]}
           label="Enter the full path of the project the pipeline belongs to"
@@ -71,8 +64,8 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
         with {:ok, pipeline} <-
                GitlabClient.fetch_pipeline(
                  %{
-                   base_url: params["instance_url"],
-                   access_token: params["access_token"]
+                   base_url: socket.assigns.base_url,
+                   access_token: socket.assigns.access_token
                  },
                  params["project_path"],
                  pipeline_iid

@@ -14,8 +14,19 @@ defmodule CiPipelineVizWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", CiPipelineVizWeb do
+  pipeline :auth do
+    plug CiPipelineVizWeb.Plugs.AuthPlug
+  end
+
+  scope "/settings", CiPipelineVizWeb do
     pipe_through [:browser]
+
+    get "/", SettingsController, :show
+    post "/", SettingsController, :save
+  end
+
+  scope "/", CiPipelineVizWeb do
+    pipe_through [:browser, :auth]
 
     live "/", Live.PipelineViz
   end
