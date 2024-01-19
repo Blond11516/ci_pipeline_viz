@@ -33,6 +33,7 @@ defmodule CiPipelineVizWeb.Live.PipelineViz do
           field={@pipeline_form["access_token"]}
           label="Enter your Gitlab access token"
           placeholder="glpat-pn8LxA8b8UyfrJxRvVRw"
+          type="password"
         />
 
         <.input
