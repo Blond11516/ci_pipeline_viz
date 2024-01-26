@@ -36,7 +36,7 @@ defmodule CiPipelineViz.MixProject do
       {:phoenix_html, "== 4.0.0"},
       {:phoenix_live_reload, "== 1.4.1", only: :dev},
       {:phoenix_live_view, "== 0.20.3"},
-      {:floki, "== 0.35.2", only: :test},
+      {:floki, "== 0.35.3", only: :test},
       {:phoenix_live_dashboard, "== 0.8.3"},
       {:esbuild, "== 0.8.1", runtime: Mix.env() == :dev},
       {:tailwind, "== 0.2.2", runtime: Mix.env() == :dev},
