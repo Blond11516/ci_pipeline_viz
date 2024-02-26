@@ -10,7 +10,7 @@ defmodule CiPipelineViz.GitlabClient do
         }
 
   @spec fetch_pipeline(gitlab_config(), Project.path(), Pipeline.iid()) ::
-          {:ok, Pipeline.t(), Graph.t()} | {:error, :no_pipeline_data} | {:error, :no_jobs_data}
+          {:ok, Pipeline.t()} | {:error, :no_pipeline_data} | {:error, :no_jobs_data}
   def fetch_pipeline(gitlab_config, project_path, pipeline_iid) do
     with {:ok, response} <- make_request(gitlab_config, project_path, pipeline_iid),
          {:ok, pipeline_response} <- extract_pipeline(response),

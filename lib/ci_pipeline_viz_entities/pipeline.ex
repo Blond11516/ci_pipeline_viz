@@ -6,7 +6,7 @@ defmodule CiPipelineViz.Entities.Pipeline do
           iid: iid(),
           duration: float(),
           queued_duration: float(),
-          jobs: [CiPipelineViz.Job.t()],
+          jobs: [CiPipelineViz.Entities.Job.t()],
           started_at: DateTime.t()
         }
 
