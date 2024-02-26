@@ -32,19 +32,19 @@ defmodule CiPipelineViz.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "== 1.7.10"},
+      {:phoenix, "== 1.7.11"},
       {:phoenix_html, "== 4.0.0"},
       {:phoenix_live_reload, "== 1.4.1", only: :dev},
-      {:phoenix_live_view, "== 0.20.3"},
+      {:phoenix_live_view, "== 0.20.7"},
       {:floki, "== 0.35.3", only: :test},
       {:phoenix_live_dashboard, "== 0.8.3"},
       {:esbuild, "== 0.8.1", runtime: Mix.env() == :dev},
       {:tailwind, "== 0.2.2", runtime: Mix.env() == :dev},
-      {:bun, "== 1.0.0", runtime: Mix.env() == :dev},
+      {:bun, "== 1.1.0", runtime: Mix.env() == :dev},
       {:telemetry_metrics, "== 0.6.2"},
       {:telemetry_poller, "== 1.0.0"},
       {:jason, "== 1.4.1"},
-      {:bandit, "== 1.1.3"},
+      {:bandit, "== 1.2.2"},
       {:dotenv_parser, "== 2.0.0"},
       {:neuron, "== 5.1.0"},
       {:dialyxir, "== 1.4.3", only: [:dev, :test], runtime: false},
