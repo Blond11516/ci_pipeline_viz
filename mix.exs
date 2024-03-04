@@ -33,7 +33,7 @@ defmodule CiPipelineViz.MixProject do
   defp deps do
     [
       {:phoenix, "== 1.7.11"},
-      {:phoenix_html, "== 4.0.0"},
+      {:phoenix_html, "== 4.1.1"},
       {:phoenix_live_reload, "== 1.4.1", only: :dev},
       {:phoenix_live_view, "== 0.20.11"},
       {:floki, "== 0.36.0", only: :test},
