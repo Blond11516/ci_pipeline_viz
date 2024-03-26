@@ -40,7 +40,7 @@ defmodule CiPipelineViz.MixProject do
       {:phoenix_live_dashboard, "== 0.8.3"},
       {:esbuild, "== 0.8.1", runtime: Mix.env() == :dev},
       {:tailwind, "== 0.2.2", runtime: Mix.env() == :dev},
-      {:bun, "== 1.1.0", runtime: Mix.env() == :dev},
+      {:bun, "== 1.2.0", runtime: Mix.env() == :dev},
       {:telemetry_metrics, "== 1.0.0"},
       {:telemetry_poller, "== 1.0.0"},
       {:jason, "== 1.4.1"},
