@@ -44,7 +44,7 @@ defmodule CiPipelineViz.MixProject do
       {:telemetry_metrics, "== 1.0.0"},
       {:telemetry_poller, "== 1.0.0"},
       {:jason, "== 1.4.1"},
-      {:bandit, "== 1.3.0"},
+      {:bandit, "== 1.4.1"},
       {:dotenv_parser, "== 2.0.0"},
       {:neuron, "== 5.1.0"},
       {:dialyxir, "== 1.4.3", only: [:dev, :test], runtime: false},
