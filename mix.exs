@@ -32,7 +32,7 @@ defmodule CiPipelineViz.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "== 1.7.11"},
+      {:phoenix, "== 1.7.12"},
       {:phoenix_html, "== 4.1.1"},
       {:phoenix_live_reload, "== 1.5.3", only: :dev},
       {:phoenix_live_view, "== 0.20.14"},
