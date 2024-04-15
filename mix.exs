@@ -42,7 +42,7 @@ defmodule CiPipelineViz.MixProject do
       {:tailwind, "== 0.2.2", runtime: Mix.env() == :dev},
       {:bun, "== 1.2.0", runtime: Mix.env() == :dev},
       {:telemetry_metrics, "== 1.0.0"},
-      {:telemetry_poller, "== 1.0.0"},
+      {:telemetry_poller, "== 1.1.0"},
       {:jason, "== 1.4.1"},
       {:bandit, "== 1.3.0"},
       {:dotenv_parser, "== 2.0.0"},
